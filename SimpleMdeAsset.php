@@ -12,11 +12,20 @@ use yii\web\AssetBundle;
 
 class SimpleMdeAsset extends AssetBundle
 {
-    public $sourcePath = "@bower/dist";
 
-    public $js  = ['simplemde.min.js'];
+    public $depends = ['dungang\inlineattachment\assets\CodeMirror4InlineAttachmentAsset'];
 
-    public $css  = ['simplemde.min.css'];
+    public function init()
+    {
+        if (YII_DEBUG) {
+            $this->sourcePath = "@bower/simplemde/debug";
+            $this->css  = ['simplemde.css'];
+            $this->js  = ['simplemde.js'];
 
-    public $depends = [ 'yii\web\JqueryAsset'];
+        } else {
+            $this->sourcePath = "@bower/simplemde/dist";
+            $this->css  = ['simplemde.min.css'];
+            $this->js  = ['simplemde.min.js'];
+        }
+    }
 }

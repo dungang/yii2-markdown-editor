@@ -9,6 +9,8 @@ namespace dungang\simplemde;
 
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\web\JsExpression;
 use yii\widgets\InputWidget;
 
 class SimpleMdeWidget extends InputWidget
@@ -16,13 +18,37 @@ class SimpleMdeWidget extends InputWidget
 
     public $clientOptions = [];
 
+    public $inlineAttachmentOptions = [];
+
     public function run()
     {
         $id = $this->options['id'];
-        $this->clientOptions['element'] = "document.getElementById('$id')";
+        if (empty($this->clientOptions['spellChecker'])) {
+            $this->clientOptions['spellChecker'] = false;
+        }
+        $this->clientOptions['element'] = new JsExpression("document.getElementById('$id')");
         SimpleMdeAsset::register($this->view);
         $options = Json::encode($this->clientOptions);
-        $this->view->registerJs("new SimpleMDE($options)");
+
+        if(empty($this->inlineAttachmentOptions['uploadUrl'])) {
+            $this->inlineAttachmentOptions['uploadUrl'] = Url::to(['/inline-attachment/file']);
+        }
+        $request = \Yii::$app->getRequest();
+        $this->inlineAttachmentOptions['extraParams'] = [
+            $request->csrfParam => $request->getCsrfToken()
+        ];
+        $attachmentOptions = Json::encode($this->inlineAttachmentOptions);
+        $this->view->registerCss("
+            .CodeMirror-fullscreen,
+            .editor-toolbar.fullscreen {
+                z-index: 1034;
+            }
+        ");
+        $this->view->registerJs("
+        (function(){ 
+            var editor = new SimpleMDE($options);
+            inlineAttachment.editors.codemirror4.attach(editor.codemirror,$attachmentOptions);
+        })();");
         if ($this->hasModel()) {
             return Html::activeTextarea($this->model, $this->attribute, $this->options);
         } else {
