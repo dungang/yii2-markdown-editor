@@ -15,6 +15,7 @@ use yii\widgets\InputWidget;
 
 class SimpleMdeWidget extends InputWidget
 {
+    public $uploadUrl = ['/inline-attachment/file'];
 
     public $clientOptions = [];
 
@@ -29,11 +30,9 @@ class SimpleMdeWidget extends InputWidget
         $this->clientOptions['element'] = new JsExpression("document.getElementById('$id')");
         SimpleMdeAsset::register($this->view);
         $options = Json::encode($this->clientOptions);
-
-        if(empty($this->inlineAttachmentOptions['uploadUrl'])) {
-            $this->inlineAttachmentOptions['uploadUrl'] = Url::to(['/inline-attachment/file']);
-        }
         $request = \Yii::$app->getRequest();
+
+        $this->inlineAttachmentOptions['uploadUrl'] = Url::to($this->uploadUrl);
         $this->inlineAttachmentOptions['extraParams'] = [
             $request->csrfParam => $request->getCsrfToken()
         ];
