@@ -2,7 +2,6 @@
   "name": "dungang/yii2-simplemde",
   "description": "A simple, beautiful, and embeddable JavaScript Markdown editor. Delightful editing for beginners and experts alike. Features built-in autosaving and spell checking. https://simplemde.com",
   "license": "MIT",
-  "minimum-stability": "dev",
   "authors": [
     {
       "name": "dun gang",
@@ -14,7 +13,7 @@
   "require": {
     "php": ">=5.4.0",
     "yiisoft/yii2": "~2.0.5",
-    "dungang/yii2-inline-attachment": "dev-master",
+    "dungang/yii2-inline-attachment": "*",
     "bower-asset/simplemde": "~1.11"
   },
   "autoload": {
